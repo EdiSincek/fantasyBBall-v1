@@ -18,7 +18,7 @@ exports.yfbb = {
   // API endpoints
   YAHOO: `https://fantasysports.yahooapis.com/fantasy/v2`,
   gameKey() {
-    return `${this.YAHOO}/game/mlb`;
+    return `${this.YAHOO}/game/nba`;
   },
   freeAgents(i) {
     const startNum = typeof i !== "number" || i < 0 || i > 20 ? 0 : i;
@@ -47,6 +47,12 @@ exports.yfbb = {
   },
   roster() {
     return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${CONFIG.TEAM}/roster/players`;
+  },
+  standings() {
+    return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/standings`;
+  },
+  team() {
+    return `${this.YAHOO}/team/418.l.32331.t.2`;
   },
 
   // Write to an external file to display output data
@@ -89,6 +95,7 @@ exports.yfbb = {
 
   // If no yahoo.json file, initialize first authorization
   getInitialAuthorization() {
+    console.log(this.AUTH_HEADER)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
@@ -106,18 +113,22 @@ exports.yfbb = {
       }),
     }).catch((err) => {
       console.error(`Error in getInitialAuthorization(): ${err}`);
+      console.error(err.stack);
     });
   },
 
   // If authorization token is stale, refresh it
   refreshAuthorizationToken(token) {
+    console.log("TOKEN: " + token)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
       headers: {
         Authorization: `Basic ${this.AUTH_HEADER}`,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST",
         "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.119 Safari/537.36",
       },
       data: qs.stringify({
         redirect_uri: "oob",
@@ -307,4 +318,25 @@ exports.yfbb = {
       return err;
     }
   },
+
+  async getLeagueStandings() {
+    try {
+      const results = await this.makeAPIrequest(this.standings());
+      return results;
+    }
+    catch (err) {
+      console.error(`Error in getLeagueStandings(): ${err}`);
+      return err;
+    }
+  },
+
+  async getTeam() {
+    try {
+      const results = await this.makeAPIrequest(this.team());
+      return results;
+    } catch (err) {
+      console.error(`Error in getLeagueStandings(): ${err}`);
+      return err;
+    }
+  }
 };

@@ -8,7 +8,9 @@
     "league-prefix": "node src/getLeaguePrefix.js",
     "test": "npx mocha",
     "format": "eslint --fix \"$PWD/src/**/*.js\" && prettier-eslint \"$PWD/src/**/*.js\"",
-    "update": "ncu -u && npm update && rm package-lock.json && npm install"
+    "update": "ncu -u && npm update && rm package-lock.json && npm install",
+    "build": "cd client && npm install && npm run build",
+    "dev": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -18,21 +20,23 @@
   "author": "Edward Distel",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.3.2",
+    "axios": "^1.2.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
     "qs": "^6.11.0",
     "xml2json": "^0.12.0"
   },
   "devDependencies": {
     "chai": "^4.3.7",
-    "eslint": "^8.33.0",
+    "eslint": "^8.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "mocha": "^10.2.0",
-    "npm-check-updates": "^16.6.5",
-    "prettier": "^2.8.4",
+    "npm-check-updates": "^16.6.2",
+    "prettier": "^2.8.3",
     "prettier-eslint": "^15.0.1",
     "prettier-eslint-cli": "^7.1.0"
   }

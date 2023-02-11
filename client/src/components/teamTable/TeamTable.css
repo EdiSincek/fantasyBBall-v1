@@ -1,0 +1,27 @@
+.league-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.league-table th {
+    background-color: blue;
+    color: white;
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.league-table td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.league-table td:first-child,
+.league-table th:first-child {
+    border-left: none;
+}
+
+.league-table td:last-child,
+.league-table th:last-child {
+    border-right: none;
+}

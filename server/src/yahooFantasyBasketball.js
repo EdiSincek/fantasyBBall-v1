@@ -62,6 +62,9 @@ exports.yfbb = {
   player(playerKey) {
     return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/players;player_keys=${playerKey}/stats`;
   },
+  matchups() {
+    return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/scoreboard`;
+  },
 
   // Write to an external file to display output data
   writeToFile(data, file, flag) {
@@ -126,7 +129,6 @@ exports.yfbb = {
 
   // If authorization token is stale, refresh it
   refreshAuthorizationToken(token) {
-    console.log("TOKEN: " + token)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
@@ -135,7 +137,7 @@ exports.yfbb = {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,POST",
         "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.119 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
       },
       data: qs.stringify({
         redirect_uri: "oob",
@@ -329,7 +331,7 @@ exports.yfbb = {
   async getLeagueStandings() {
     try {
       const results = await this.makeAPIrequest(this.standings());
-      return results;
+      return results.fantasy_content.league.standings.teams;
     }
     catch (err) {
       console.error(`Error in getLeagueStandings(): ${err}`);
@@ -362,6 +364,16 @@ exports.yfbb = {
       return results.fantasy_content.league.players.player;
     } catch (err) {
       console.error(`Error in getPlayer(): ${err}`);
+      return err;
+    }
+  },
+
+  async getMatchups() {
+    try {
+      const results = await this.makeAPIrequest(this.matchups());
+      return results.fantasy_content.league.scoreboard;
+    } catch (err) {
+      console.error(`Error in getMatchups(): ${err}`);
       return err;
     }
   }

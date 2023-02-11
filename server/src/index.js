@@ -15,9 +15,22 @@ app.use(cors());
 
 
 app.get("/api", async (req, res) => {
+  yahoo.yfbb.readCredentials();
   const data = await test();
   res.send(data)
 });
+
+app.get("/standings", async (req, res) => {
+  yahoo.yfbb.readCredentials();
+  const data = await handleResponse.handleResponse.getStandings();
+  res.send(data)
+})
+
+app.get("/matchups", async (req, res) => {
+  yahoo.yfbb.readCredentials();
+  const data = await handleResponse.handleResponse.getAllMatchups();
+  res.send(data)
+})
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -26,8 +39,9 @@ app.listen(PORT, () => {
 
 const test = async () => {
   await yahoo.yfbb.readCredentials();
-  const data = await yahoo.yfbb.getRoster(8)
+  const data = await yahoo.yfbb.getMatchups();
+  console.log(data)
   return data
 
 }
-test();
+//test();

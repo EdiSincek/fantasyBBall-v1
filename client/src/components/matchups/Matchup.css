@@ -1,0 +1,21 @@
+.Matchup {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 35%;
+    margin: 0 auto;
+    /* this centers the container horizontally */
+}
+
+.Matchup h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.Matchup p {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}

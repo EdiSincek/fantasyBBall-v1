@@ -5,9 +5,12 @@ import TeamTable from './components/teamTable/TeamTable';
 import PlayerStats from './components/playerStats/PlayerStats';
 
 function App() {
-  // useEffect(() => {
-  //   fetch("http://localhost:3001/api").then(res => console.log(res));
-  // })
+  useEffect(() => {
+    fetch('http://localhost:3001/api')
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  }, []);
 
   return (
     <div className="App">

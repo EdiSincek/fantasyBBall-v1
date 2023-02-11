@@ -18,20 +18,20 @@ const teams = [
 
 const TeamTable = () => {
     return (
-        <table class="league-table">
+        <table className="league-table">
             <thead>
                 <tr>
-                    <th class="table-header">Position</th>
-                    <th class="table-header">Name</th>
-                    <th class="table-header">Points</th>
+                    <th className="table-header">Position</th>
+                    <th className="table-header">Name</th>
+                    <th className="table-header">Points</th>
                 </tr>
             </thead>
             <tbody>
                 {teams.map((team) => (
                     <tr key={team.position}>
-                        <td class="table-cell table-cell-position">{team.position}</td>
-                        <td class="table-cell table-cell-name">{team.name}</td>
-                        <td class="table-cell table-cell-points">{team.points}</td>
+                        <td className="table-cell table-cell-position">{team.position}</td>
+                        <td className="table-cell table-cell-name">{team.name}</td>
+                        <td className="table-cell table-cell-points">{team.points}</td>
                     </tr>
                 ))}
             </tbody>

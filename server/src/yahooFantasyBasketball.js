@@ -7,6 +7,7 @@ const CONFIG = require("../config.json");
 exports.yfbb = {
   // Global credentials variable
   CREDENTIALS: null,
+  SEASON_KEY: 418,
 
   // Used for authentication
   AUTH_HEADER: Buffer.from(`${CONFIG.CONSUMER_KEY}:${CONFIG.CONSUMER_SECRET}`, `binary`).toString(`base64`),
@@ -51,8 +52,15 @@ exports.yfbb = {
   standings() {
     return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/standings`;
   },
-  team() {
-    return `${this.YAHOO}/team/418.l.32331.t.2`;
+  team(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}`;
+  },
+  roster(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/roster/players`;
+  }
+  ,
+  player(playerKey) {
+    return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/players;player_keys=${playerKey}/stats`;
   },
 
   // Write to an external file to display output data
@@ -95,7 +103,6 @@ exports.yfbb = {
 
   // If no yahoo.json file, initialize first authorization
   getInitialAuthorization() {
-    console.log(this.AUTH_HEADER)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
@@ -330,12 +337,31 @@ exports.yfbb = {
     }
   },
 
-  async getTeam() {
+  async getTeam(teamId) {
     try {
-      const results = await this.makeAPIrequest(this.team());
-      return results;
+      const results = await this.makeAPIrequest(this.team(teamId));
+      return results.fantasy_content.team;
     } catch (err) {
-      console.error(`Error in getLeagueStandings(): ${err}`);
+      console.error(`Error in getTeam(): ${err}`);
+      return err;
+    }
+  },
+  async getRoster(teamId) {
+    try {
+      const results = await this.makeAPIrequest(this.roster(teamId));
+      return results.fantasy_content.team.roster.players.player;
+    } catch (err) {
+      console.error(`Error in getTeam(): ${err}`);
+      return err;
+    }
+  },
+
+  async getPlayer(playerId) {
+    try {
+      const results = await this.makeAPIrequest(this.player(playerId));
+      return results.fantasy_content.league.players.player;
+    } catch (err) {
+      console.error(`Error in getPlayer(): ${err}`);
       return err;
     }
   }

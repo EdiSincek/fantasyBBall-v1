@@ -1,0 +1,44 @@
+.TeamBasicInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    font-family: "Gill Sans", sans-serif;
+}
+
+.team-image {
+    width: 200px;
+    height: 200px;
+    margin-right: 20px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+.manager-image {
+    width: 150px;
+    height: 150px;
+    margin-left: 35%;
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    border: black solid;
+    width: 30%;
+}
+
+.team-name {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.team-description {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.team-stats {
+    width: 70%;
+}

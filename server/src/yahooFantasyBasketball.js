@@ -46,14 +46,11 @@ exports.yfbb = {
   statsID() {
     return `${this.YAHOO}/game/${CONFIG.LEAGUE_KEY.substr(0, 3)}/stat_categories`;
   },
-  roster() {
-    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${CONFIG.TEAM}/roster/players`;
-  },
   standings() {
     return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/standings`;
   },
   team(teamId) {
-    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}`;
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/standings`;
   },
   roster(teamId) {
     return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/roster/players`;
@@ -65,13 +62,16 @@ exports.yfbb = {
   matchups() {
     return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/scoreboard`;
   },
+  teamSeasonStats(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/stats;type=season;season=${this.SEASON_KEY}`;
+  },
 
   // Write to an external file to display output data
   writeToFile(data, file, flag) {
     if (flag === null) {
       flag = `a`;
     }
-    fs.writeFile(file, data, { flag }, (err) => {
+    fs.writeFileSync(file, data, { flag }, (err) => {
       if (err) {
         console.error(`Error in writing to ${file}: ${err}`);
       }
@@ -134,8 +134,6 @@ exports.yfbb = {
       method: "post",
       headers: {
         Authorization: `Basic ${this.AUTH_HEADER}`,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST",
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
       },
@@ -374,6 +372,15 @@ exports.yfbb = {
       return results.fantasy_content.league.scoreboard;
     } catch (err) {
       console.error(`Error in getMatchups(): ${err}`);
+      return err;
+    }
+  },
+  async getTeamSeasonStats(teamId) {
+    try {
+      const result = await this.makeAPIrequest(this.teamSeasonStats(teamId));
+      return result.fantasy_content;
+    } catch (err) {
+      console.error(`Error in getTeamSeasonStats(): ${err}`);
       return err;
     }
   }

@@ -21,7 +21,7 @@ app.get("/api", async (req, res) => {
 });
 
 app.get("/team", async (req, res) => {
-  yahoo.yfbb.readCredentials();
+  await yahoo.yfbb.readCredentials();
   const teamId = req.query.teamId;
   const data = await handleResponse.handleResponse.getBasicTeamInfo(teamId);
   res.send(data)

@@ -1,9 +1,5 @@
 import './App.css';
-import { useEffect } from 'react';
 import Header from './components/header/Header';
-import TeamTable from './components/teamTable/TeamTable';
-import PlayerStats from './components/playerStats/PlayerStats';
-import Matchups from './components/matchups/Matchups';
 import Team from './components/team/Team';
 
 function App() {

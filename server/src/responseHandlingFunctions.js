@@ -72,6 +72,8 @@ exports.handleResponse = {
 
     async getBasicTeamInfo(teamId) {
         const team = await yahoo.yfbb.getTeam(teamId);
+        const roster = await yahoo.yfbb.getRoster(teamId);
+
         const result = {
             "name": team.name,
             "manager": team.managers.manager.nickname,
@@ -87,7 +89,8 @@ exports.handleResponse = {
             "wins": team.team_standings.outcome_totals.wins,
             "ties": team.team_standings.outcome_totals.ties,
             "loses": team.team_standings.outcome_totals.loses,
-            "percentage": team.team_standings.outcome_totals.percentage
+            "percentage": team.team_standings.outcome_totals.percentage,
+            "roster": roster
         }
         return result;
     },

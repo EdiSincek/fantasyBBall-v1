@@ -1,19 +1,57 @@
 const fs = require("fs");
-const yahoo = require("./yahooFantasyBaseball");
+const yahoo = require("./yahooFantasyBasketball");
+const handleResponse = require("./responseHandlingFunctions");
 const express = require("express");
 const path = require('path');
+const cors = require('cors');
 
 
 const PORT = 3001;
 
 const app = express();
 
+app.use(cors());
 
 
+//yahoo.yfbb.readCredentials();
 app.get("/api", async (req, res) => {
+  //yahoo.yfbb.readCredentials();
   const data = await test();
-  res.json({ data })
+  res.send(data)
 });
+
+app.get("/team", async (req, res) => {
+  await yahoo.yfbb.readCredentials();
+  const teamId = req.query.teamId;
+  const data = await handleResponse.handleResponse.getBasicTeamInfo(teamId);
+  res.send(data)
+})
+
+app.get("/teamStats", async (req, res) => {
+  yahoo.yfbb.readCredentials();
+  const teamId = req.query.teamId;
+  const data = await handleResponse.handleResponse.getTeamStats(teamId);
+  res.send(data)
+})
+
+app.get("/playerStats", async (req, res) => {
+  yahoo.yfbb.readCredentials();
+  const playerId = req.query.playerId;
+  const data = await handleResponse.handleResponse.getPlayerStats(playerId);
+  res.send(data)
+})
+
+app.get("/standings", async (req, res) => {
+  await yahoo.yfbb.readCredentials();
+  const data = await handleResponse.handleResponse.getStandings();
+  res.send(data)
+})
+
+app.get("/matchups", async (req, res) => {
+  //yahoo.yfbb.readCredentials();
+  const data = await handleResponse.handleResponse.getAllMatchups();
+  res.send(data)
+})
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -22,70 +60,8 @@ app.listen(PORT, () => {
 
 const test = async () => {
   await yahoo.yfbb.readCredentials();
+  const data = await yahoo.yfbb.getMatchups();
+  return data
 
-  const data = await yahoo.yfbb.getTeam();
-  console.log(data)
-  return data;
 }
 //test();
-
-const getData = async () => {
-  try {
-    // Read credentials file or get new authorization token
-    await yahoo.yfbb.readCredentials();
-
-    // If crededentials exist
-    if (yahoo.yfbb.CREDENTIALS) {
-      yahoo.yfbb.WEEK = await yahoo.yfbb.getCurrentWeek();
-      // console.log(`Getting current week...`);
-
-      // const freeAgents = await yahoo.yfbb.getFreeAgents();
-      // console.log(`Getting free agents...`);
-
-      // const myPlayers = await yahoo.yfbb.getMyPlayers();
-      // console.log(`Getting a list of my players...`);
-
-      // const myPlayersStats = await yahoo.yfbb.getMyPlayersStats();
-      // console.log(`Getting my players' stats...`);
-
-      // const myScoreboard = await yahoo.yfbb.getMyScoreboard();
-      // console.log(`Getting the scoreboard...`);
-
-      // const statsIDs = await yahoo.yfbb.getStatsIDs();
-      // console.log(`Getting the ID mapping of the stats...`);
-
-      const currentRoster = await yahoo.yfbb.getCurrentRoster();
-      console.log(`Getting my current roster...`);
-
-      // const transactions = await yahoo.yfbb.getTransactions();
-      // console.log(`Getting a list of transactions...`);
-
-      const allData = {
-        // "free agents": freeAgents,
-        // "my players": myPlayers,
-        // "my players' stats": myPlayersStats,
-        // "my scoreboard": myScoreboard,
-        // "stat IDs": statsIDs,
-        "current roster": currentRoster,
-        //transactions,
-      };
-
-
-      const data = JSON.stringify(allData);
-
-      const outputFile = "./allMyData.json";
-
-      // Writing to file
-      fs.writeFile(outputFile, data, { flag: "w" }, (err) => {
-        if (err) {
-          console.error(`Error in writing to ${outputFile}: ${err}`);
-        } else {
-          console.error(`Data successfully written to ${outputFile}.`);
-        }
-      });
-    }
-  } catch (err) {
-    console.error(`Error in getData(): ${err}`);
-  }
-};
-

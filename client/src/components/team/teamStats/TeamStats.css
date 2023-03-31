@@ -1,0 +1,12 @@
+.TeamStats {
+    border: yellow solid;
+    font-family: "Gill Sans", sans-serif;
+}
+
+.TeamStats p {
+    font-size: 20px;
+}
+
+.TeamStats h1 {
+    font-size: 32px;
+}

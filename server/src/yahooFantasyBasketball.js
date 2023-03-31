@@ -7,13 +7,14 @@ const CONFIG = require("../config.json");
 exports.yfbb = {
   // Global credentials variable
   CREDENTIALS: null,
+  SEASON_KEY: 418,
 
   // Used for authentication
   AUTH_HEADER: Buffer.from(`${CONFIG.CONSUMER_KEY}:${CONFIG.CONSUMER_SECRET}`, `binary`).toString(`base64`),
   AUTH_ENDPOINT: `https://api.login.yahoo.com/oauth2/get_token`,
 
   // Global week variable, start at 1
-  WEEK: 1,
+  WEEK: 16,
 
   // API endpoints
   YAHOO: `https://fantasysports.yahooapis.com/fantasy/v2`,
@@ -45,14 +46,27 @@ exports.yfbb = {
   statsID() {
     return `${this.YAHOO}/game/${CONFIG.LEAGUE_KEY.substr(0, 3)}/stat_categories`;
   },
-  roster() {
-    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${CONFIG.TEAM}/roster/players`;
-  },
   standings() {
     return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/standings`;
   },
-  team() {
-    return `${this.YAHOO}/team/418.l.32331.t.2`;
+  team(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/standings`;
+  },
+  roster(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/roster/players`;
+  }
+  ,
+  player(playerKey) {
+    return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/players;player_keys=${playerKey}/stats`;
+  },
+  matchups() {
+    return `${this.YAHOO}/league/${CONFIG.LEAGUE_KEY}/scoreboard`;
+  },
+  teamSeasonStats(teamId) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/stats;type=season;season=${this.SEASON_KEY}`;
+  },
+  playerSeasonStats(playerId) {
+    return `${this.YAHOO}/player/${this.SEASON_KEY}.p.6015/stats`;
   },
 
   // Write to an external file to display output data
@@ -60,7 +74,7 @@ exports.yfbb = {
     if (flag === null) {
       flag = `a`;
     }
-    fs.writeFile(file, data, { flag }, (err) => {
+    fs.writeFileSync(file, data, { flag }, (err) => {
       if (err) {
         console.error(`Error in writing to ${file}: ${err}`);
       }
@@ -95,7 +109,6 @@ exports.yfbb = {
 
   // If no yahoo.json file, initialize first authorization
   getInitialAuthorization() {
-    console.log(this.AUTH_HEADER)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
@@ -119,16 +132,13 @@ exports.yfbb = {
 
   // If authorization token is stale, refresh it
   refreshAuthorizationToken(token) {
-    console.log("TOKEN: " + token)
     return axios({
       url: this.AUTH_ENDPOINT,
       method: "post",
       headers: {
         Authorization: `Basic ${this.AUTH_HEADER}`,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST",
         "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.119 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
       },
       data: qs.stringify({
         redirect_uri: "oob",
@@ -322,7 +332,7 @@ exports.yfbb = {
   async getLeagueStandings() {
     try {
       const results = await this.makeAPIrequest(this.standings());
-      return results;
+      return results.fantasy_content.league.standings.teams;
     }
     catch (err) {
       console.error(`Error in getLeagueStandings(): ${err}`);
@@ -330,12 +340,60 @@ exports.yfbb = {
     }
   },
 
-  async getTeam() {
+  async getTeam(teamId) {
     try {
-      const results = await this.makeAPIrequest(this.team());
-      return results;
+      const results = await this.makeAPIrequest(this.team(teamId));
+      return results.fantasy_content.team;
     } catch (err) {
-      console.error(`Error in getLeagueStandings(): ${err}`);
+      console.error(`Error in getTeam(): ${err}`);
+      return err;
+    }
+  },
+  async getRoster(teamId) {
+    try {
+      const results = await this.makeAPIrequest(this.roster(teamId));
+      return results.fantasy_content.team.roster.players.player;
+    } catch (err) {
+      console.error(`Error in getTeam(): ${err}`);
+      return err;
+    }
+  },
+
+  async getPlayer(playerId) {
+    try {
+      const results = await this.makeAPIrequest(this.player(playerId));
+      return results.fantasy_content.league.players.player;
+    } catch (err) {
+      console.error(`Error in getPlayer(): ${err}`);
+      return err;
+    }
+  },
+
+  async getMatchups() {
+    try {
+      const results = await this.makeAPIrequest(this.matchups());
+      return results.fantasy_content.league.scoreboard;
+    } catch (err) {
+      console.error(`Error in getMatchups(): ${err}`);
+      return err;
+    }
+  },
+  async getTeamSeasonStats(teamId) {
+    try {
+      const result = await this.makeAPIrequest(this.teamSeasonStats(teamId));
+      return result.fantasy_content;
+    } catch (err) {
+      console.error(`Error in getTeamSeasonStats(): ${err}`);
+      return err;
+    }
+  },
+
+  async getPlayerSeasonStats(playerId) {
+    try {
+      const result = await this.makeAPIrequest(this.playerSeasonStats(playerId));
+      return result.fantasy_content.player;
+    } catch (err) {
+      console.error(`Error in getPlayerSeasonStats(): ${err}`);
       return err;
     }
   }

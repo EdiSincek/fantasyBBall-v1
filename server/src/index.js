@@ -34,6 +34,13 @@ app.get("/teamStats", async (req, res) => {
   res.send(data)
 })
 
+app.get("/playerStats", async (req, res) => {
+  yahoo.yfbb.readCredentials();
+  const playerId = req.query.playerId;
+  const data = await handleResponse.handleResponse.getPlayerStats(playerId);
+  res.send(data)
+})
+
 app.get("/standings", async (req, res) => {
   await yahoo.yfbb.readCredentials();
   const data = await handleResponse.handleResponse.getStandings();

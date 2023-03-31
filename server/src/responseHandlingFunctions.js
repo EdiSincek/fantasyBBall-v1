@@ -116,6 +116,11 @@ exports.handleResponse = {
 
         return (result)
 
+    },
+
+    async getPlayerStats(playerKey) {
+        const playerStats = await yahoo.yfbb.getPlayerSeasonStats(playerKey);
+        return (playerStats)
     }
 
 }

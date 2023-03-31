@@ -14,7 +14,7 @@ exports.yfbb = {
   AUTH_ENDPOINT: `https://api.login.yahoo.com/oauth2/get_token`,
 
   // Global week variable, start at 1
-  WEEK: 1,
+  WEEK: 16,
 
   // API endpoints
   YAHOO: `https://fantasysports.yahooapis.com/fantasy/v2`,
@@ -64,6 +64,9 @@ exports.yfbb = {
   },
   teamSeasonStats(teamId) {
     return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/stats;type=season;season=${this.SEASON_KEY}`;
+  },
+  playerSeasonStats(playerId) {
+    return `${this.YAHOO}/player/${this.SEASON_KEY}.p.6015/stats`;
   },
 
   // Write to an external file to display output data
@@ -381,6 +384,16 @@ exports.yfbb = {
       return result.fantasy_content;
     } catch (err) {
       console.error(`Error in getTeamSeasonStats(): ${err}`);
+      return err;
+    }
+  },
+
+  async getPlayerSeasonStats(playerId) {
+    try {
+      const result = await this.makeAPIrequest(this.playerSeasonStats(playerId));
+      return result.fantasy_content.player;
+    } catch (err) {
+      console.error(`Error in getPlayerSeasonStats(): ${err}`);
       return err;
     }
   }

@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import './Player.css';
 
 function Player(props) {
-    useEffect(() => {
-        console.log(props)
-    })
+    // useEffect(() => {
+    //     console.log(props)
+    // })
     return (
         <div className="Player">
             <img src={props.player.headshot.url} alt={props.player.name.full} />

@@ -65,6 +65,9 @@ exports.yfbb = {
   teamSeasonStats(teamId) {
     return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/stats;type=season;season=${this.SEASON_KEY}`;
   },
+  teamWeeklyStats(teamId, week) {
+    return `${this.YAHOO}/team/${CONFIG.LEAGUE_KEY}.t.${teamId}/stats;type=week;week=${week}`;
+  },
   playerSeasonStats(playerId) {
     return `${this.YAHOO}/player/${this.SEASON_KEY}.p.6015/stats`;
   },
@@ -166,6 +169,7 @@ exports.yfbb = {
       const jsonData = JSON.parse(parser.toJson(response.data));
       return jsonData;
     } catch (err) {
+      console.log("ERROR")
       if (err.response.data && err.response.data.error && err.response.data.error.description && err.response.data.error.description.includes("token_expired")) {
         const newToken = await this.refreshAuthorizationToken(this.CREDENTIALS.refresh_token);
         if (newToken && newToken.data && newToken.data.access_token) {
@@ -384,6 +388,16 @@ exports.yfbb = {
       return result.fantasy_content;
     } catch (err) {
       console.error(`Error in getTeamSeasonStats(): ${err}`);
+      return err;
+    }
+  },
+
+  async getTeamWeeklyStats(teamId, week) {
+    try {
+      const result = await this.makeAPIrequest(this.teamWeeklyStats(teamId, week));
+      return result.fantasy_content;
+    } catch (err) {
+      console.error(`Error in getTeamWeeklyStats(): ${err}`);
       return err;
     }
   },

@@ -95,7 +95,7 @@ exports.handleResponse = {
         return result;
     },
 
-    async getTeamStats(teamId) {
+    async getTeamSeasonStats(teamId) {
         const teamStats = await yahoo.yfbb.getTeamSeasonStats(teamId);
 
         const result = {
@@ -115,6 +115,28 @@ exports.handleResponse = {
         }
 
         return (result)
+
+    },
+
+    async getTeamWeeklyStats(teamId, week) {
+
+        const teamStats = await yahoo.yfbb.getTeamWeeklyStats(teamId, week);
+        const result = {
+            "coverage": "Week " + teamStats.team.team_stats.week,
+            "fgTotal": teamStats.team.team_stats.stats.stat[0].value,
+            "fg": teamStats.team.team_stats.stats.stat[1].value,
+            "ftTotal": teamStats.team.team_stats.stats.stat[2].value,
+            "ft": teamStats.team.team_stats.stats.stat[3].value,
+            "threepm": teamStats.team.team_stats.stats.stat[4].value,
+            "points": teamStats.team.team_stats.stats.stat[5].value,
+            "rebounds": teamStats.team.team_stats.stats.stat[6].value,
+            "assists": teamStats.team.team_stats.stats.stat[7].value,
+            "steals": teamStats.team.team_stats.stats.stat[8].value,
+            "blocks": teamStats.team.team_stats.stats.stat[9].value,
+            "turnovers": teamStats.team.team_stats.stats.stat[10].value,
+
+        }
+        return result
 
     },
 

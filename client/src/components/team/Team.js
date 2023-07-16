@@ -8,7 +8,7 @@ function Team(props) {
     const [team, setTeam] = useState({});
     useEffect(() => {
         fetch('http://localhost:3001/team?' + new URLSearchParams({
-            teamId: 7
+            teamId: props.teamId
         })).then(res => res.json())
             .then(data => setTeam(data))
     }, [])

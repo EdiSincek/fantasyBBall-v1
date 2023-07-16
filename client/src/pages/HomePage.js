@@ -1,6 +1,11 @@
+
+import TeamTable from '../components/teamTable/TeamTable';
 function HomePage() {
     return (
-        <h1>HOME PAGE</h1>
+        <div className='HomePage'>
+            <h1>HOME PAGE</h1>
+            <TeamTable />
+        </div>
     )
 
 }

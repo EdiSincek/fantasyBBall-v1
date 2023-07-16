@@ -53,17 +53,6 @@ app.get("/matchups", async (req, res) => {
   res.send(data)
 })
 
-app.get("/luck", async (req, res) => {
-  await yahoo.yfbb.readCredentials();
-  const teamId = req.query.teamId;
-  const week = req.query.week;
-  const weeklyStats = await handleResponse.handleResponse.getTeamWeeklyStats(teamId, week);
-  // const seasonStats = await handleResponse.handleResponse.getTeamSeasonStats(teamId);
-  // const result = seasonStats + weeklyStats
-  // console.log(result)
-  res.send(weeklyStats)
-})
-
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

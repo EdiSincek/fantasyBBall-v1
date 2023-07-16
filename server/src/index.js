@@ -30,7 +30,7 @@ app.get("/team", async (req, res) => {
 app.get("/teamStats", async (req, res) => {
   yahoo.yfbb.readCredentials();
   const teamId = req.query.teamId;
-  const data = await handleResponse.handleResponse.getTeamStats(teamId);
+  const data = await handleResponse.handleResponse.getTeamSeasonStats(teamId);
   res.send(data)
 })
 
